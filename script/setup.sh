@@ -24,7 +24,7 @@ if [ -z $NO_CRF ]; then
     CRF=${PREFIX}/bin
     if [ ! -x ${PREFIX}/bin/crf_test ]; then
         echo "*** GET CRF++ ***"
-        wget "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7QVR6VXJ5dWExSTQ" -O CRF++.tar.gz
+        wget "https://drive.google.com/uc?id=0B4y35FiV1wh7QVR6VXJ5dWExSTQ&export=download" -O CRF++.tar.gz
         echo "*** INSTALL CRF++ ***"
         tar -xzf CRF++.tar.gz
         cd CRF++-0.58
@@ -71,7 +71,7 @@ if [ -z $NO_YAMCHA ]; then
         make install
         cd ..
         if [ ! -x ${PREFIX}/bin/yamcha ]; then
-            echo "*** APPLY Yamcha Patch for INSTALL Error ***"
+            echo "*** APPLY Yamcha Patch(1) for INSTALL Error ***"
             wget "https://gist.githubusercontent.com/skozawa/89024693963fd0adfa6d/raw/00ffa28de5ef11b902b4f35cbf3f3217bc62de3e/yamcha.patch"
             patch -p0 < yamcha.patch
             cd yamcha-0.33
@@ -80,6 +80,17 @@ if [ -z $NO_YAMCHA ]; then
             make install
             cd ..
             rm yamcha.patch
+        fi
+        if [ ! -x ${PREFIX}/bin/yamcha ]; then
+            echo "*** APPLY Yamcha Patch(2) for INSTALL Error ***"
+            cd yamcha-0.33
+            wget "https://sources.debian.org/data/main/y/yamcha/0.33-2/debian/patches/1011_fix_gcc7_compilation.patch"
+            patch -p1 < 1011_fix_gcc7_compilation.patch
+            ./configure --prefix=${PREFIX} --with-svm-learn=${PREFIX}
+            make
+            make install
+            rm 1011_fix_gcc7_compilation.patch
+            cd ..
         fi
         rm -rf yamcha-0.33
         rm -f yamcha.tar.gz
@@ -92,7 +103,7 @@ if [ -z $NO_MECAB ]; then
     MECAB=${PREFIX}/bin
     if [ ! -x ${PREFIX}/bin/mecab ]; then
         echo "*** GET MeCab ***"
-        wget "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE" -O mecab.tar.gz
+        wget "https://drive.google.com/uc?id=0B4y35FiV1wh7cENtOXlicTFaRUE&export=download" -O mecab.tar.gz
         echo "*** INSTALL MeCab ***"
         tar -xzf mecab.tar.gz
         cd mecab-0.996
